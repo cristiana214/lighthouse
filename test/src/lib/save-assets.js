@@ -17,25 +17,25 @@
 
 'use strict';
 
-const assets = require('../../../src/lib/save-assets');
+const assetSaver = require('../../../src/lib/save-assets');
 const assert = require('assert');
 const fs = require('fs');
 
 const screenshots = require('../audits/performance/screenshots.json');
 const traceContents = require('../audits/performance/progressive-app.json');
 
-/* global describe, it */
+/* eslint-env mocha */
 describe('save-assets helper', () => {
   it('generates HTML', () => {
     const options = {url: 'https://example.com'};
     const artifacts = {screenshots: [], traceContents: []};
-    const output = assets.prepareAssets(options, artifacts);
+    const output = assetSaver.prepareAssets(options, artifacts);
     assert.ok(/<!doctype/gim.test(output.html));
   });
 
   describe('saves files to disk with real filenames', function() {
     const options = {
-      url: 'https://example.com/',
+      url: 'https://testexample.com/',
       date: new Date(1464737670547),
       flags: {
         saveAssets: true
@@ -46,19 +46,17 @@ describe('save-assets helper', () => {
       screenshots
     };
 
-    assets.saveAssets(options, artifacts);
+    assetSaver.saveAssets(options, artifacts);
 
     it('trace file saved to disk with data', () => {
-      const traceFilename = `example.com_${options.date.toISOString()}.trace.json`
-        .replace(/[\/\?<>\\:\*\|":]/g, '-');
+      const traceFilename = assetSaver.getFilenamePrefix(options) + '.trace.json';
       const traceFileContents = fs.readFileSync(traceFilename, 'utf8');
       assert.equal(traceFileContents.length, 3754841);
       fs.unlinkSync(traceFilename);
     });
 
     it('screenshots file saved to disk with data', () => {
-      const ssFilename = `example.com_${options.date.toISOString()}.screenshots.html`
-        .replace(/[\/\?<>\\:\*\|":]/g, '-');
+      const ssFilename = assetSaver.getFilenamePrefix(options) + '.trace.json';
       const ssFileContents = fs.readFileSync(ssFilename, 'utf8');
       assert.ok(/<!doctype/gim.test(ssFileContents));
       assert.ok(ssFileContents.includes('{"timestamp":674089419.919'));

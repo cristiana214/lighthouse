@@ -20,7 +20,7 @@
 
 const Gather = require('../../src/gatherers/gather');
 const scheduler = require('../../src/scheduler');
-const assets = require('../../src/lib/save-assets');
+const assetSaver = require('../../src/lib/save-assets');
 const assert = require('assert');
 
 class TestGathererOne extends Gather {
@@ -341,13 +341,13 @@ describe('Scheduler', function() {
   describe('saves assets when --save-assets is set', function() {
     let prepareAssetsCalled = false;
     let saveAssetsCalled = false;
-    const _prepareAssets = assets.prepareAssets;
-    assets.prepareAssets = function() {
+    const _prepareAssets = assetSaver.prepareAssets;
+    assetSaver.prepareAssets = function() {
       prepareAssetsCalled = true;
       return _prepareAssets.apply(this, arguments);
     };
-    const _saveAssets = assets.saveAssets;
-    assets.saveAssets = function() {
+    const _saveAssets = assetSaver.saveAssets;
+    assetSaver.saveAssets = function() {
       saveAssetsCalled = true;
       return _saveAssets.apply(this, arguments);
     };

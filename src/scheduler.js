@@ -16,7 +16,7 @@
  */
 'use strict';
 
-const assets = require('./lib/save-assets.js');
+const assetSaver = require('./lib/save-assets.js');
 const Gather = require('./gatherers/gather.js');
 
 function loadPage(driver, gatherers, options) {
@@ -163,12 +163,12 @@ function run(gatherers, options) {
       // Ignoring these two flags since this functionality is not exposed by the module.
       /* istanbul ignore if */
       if (options.flags.saveArtifacts) {
-        assets.saveArtifacts(artifacts);
+        assetSaver.saveArtifacts(artifacts);
       }
 
       /* istanbul ignore if */
       if (options.flags.saveAssets) {
-        assets.saveAssets(options, artifacts);
+        assetSaver.saveAssets(options, artifacts);
       }
 
       return artifacts;
