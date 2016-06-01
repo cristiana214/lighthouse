@@ -20,7 +20,7 @@
 
 const Gather = require('../../src/gatherers/gather');
 const scheduler = require('../../src/scheduler');
-const assetSaver = require('../../src/lib/save-assets');
+const assetSaver = require('../../src/lib/asset-saver');
 const assert = require('assert');
 
 class TestGathererOne extends Gather {

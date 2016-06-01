@@ -17,7 +17,7 @@
 
 'use strict';
 
-const assetSaver = require('../../../src/lib/save-assets');
+const assetSaver = require('../../../src/lib/asset-saver');
 const assert = require('assert');
 const fs = require('fs');
 
@@ -25,7 +25,7 @@ const screenshots = require('../audits/performance/screenshots.json');
 const traceContents = require('../audits/performance/progressive-app.json');
 
 /* eslint-env mocha */
-describe('save-assets helper', () => {
+describe('asset-saver helper', () => {
   it('generates HTML', () => {
     const options = {url: 'https://example.com'};
     const artifacts = {screenshots: [], traceContents: []};

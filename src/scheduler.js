@@ -16,7 +16,7 @@
  */
 'use strict';
 
-const assetSaver = require('./lib/save-assets.js');
+const assetSaver = require('./lib/asset-saver.js');
 const Gather = require('./gatherers/gather.js');
 
 function loadPage(driver, gatherers, options) {
