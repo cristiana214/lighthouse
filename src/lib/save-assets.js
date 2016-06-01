@@ -20,11 +20,13 @@ const fs = require('fs');
 const log = require('./log.js');
 const stringify = require('json-stringify-safe');
 
-function getAssetFilename(assetName, url) {
-  const date = new Date();
+function getFilenamePrefix(options) {
+  const date = options.date || new Date();
+  const url = options.url;
+
   const hostname = url.match(/^.*?\/\/(.*?)(:?\/|$)/)[1];
   const filenamePrefix = hostname + '_' + date.toISOString();
-  return (filenamePrefix + assetName).replace(/[\/\?<>\\:\*\|":]/g, '-');
+  return (filenamePrefix).replace(/[\/\?<>\\:\*\|":]/g, '-');
 }
 
 // Some trace events are particularly large, and not only consume a LOT of disk
@@ -33,10 +35,10 @@ function filterForSize(traceData) {
   return traceData.filter(e => e.name !== 'LayoutTree');
 }
 
-function screenshotDump(filename, screenshots) {
+function screenshotDump(options, screenshots) {
   return `
   <!doctype html>
-  <title>${filename}</title>
+  <title>screenshots ${getFilenamePrefix(options)}</title>
   <style>
 html {
     overflow-x: scroll;
@@ -70,24 +72,33 @@ img {
   `;
 }
 
+function saveArtifacts(artifacts) {
+  const artifactsFilename = 'artifacts.log';
+  fs.writeFileSync(artifactsFilename, stringify(artifacts));
+  log.log('info', 'artifacts file saved to disk', artifactsFilename);
+}
+
+function prepareAssets(options, artifacts) {
+  const traceData = filterForSize(artifacts.traceContents);
+  const html = screenshotDump(options, artifacts.screenshots);
+  return {traceData, html};
+}
+
+function saveAssets(options, artifacts) {
+  const assets = prepareAssets(options, artifacts);
+
+  const traceFilename = getFilenamePrefix(options);
+  fs.writeFileSync(traceFilename + '.trace.json', stringify(assets.traceData, null, 2));
+  log.log('info', 'trace file saved to disk', traceFilename);
+
+  const screenshotsFilename = getFilenamePrefix(options);
+  fs.writeFileSync(screenshotsFilename + '.screenshots.html', assets.html);
+  log.log('info', 'screenshots saved to disk', screenshotsFilename);
+}
+
 module.exports = {
-  saveArtifacts: function(artifacts) {
-    const artifactsFilename = 'artifacts.log';
-    fs.writeFileSync(artifactsFilename, stringify(artifacts));
-    log.log('info', 'artifacts file saved to disk', artifactsFilename);
-  },
-
-  saveAssets: function(options, artifacts) {
-    const url = options.url;
-
-    const traceFilename = getAssetFilename('.trace.json', url);
-    const traceData = filterForSize(artifacts.traceContents);
-    fs.writeFileSync(traceFilename, stringify(traceData, null, 2));
-    log.log('info', 'trace file saved to disk', traceFilename);
-
-    const screenshotsFilename = getAssetFilename('.screenshots.html', url);
-    const html = screenshotDump(screenshotsFilename, artifacts.screenshots);
-    fs.writeFileSync(screenshotsFilename, html);
-    log.log('info', 'screenshots saved to disk', screenshotsFilename);
-  }
+  saveArtifacts,
+  saveAssets,
+  getFilenamePrefix,
+  prepareAssets
 };
