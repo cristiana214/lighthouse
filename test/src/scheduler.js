@@ -338,7 +338,7 @@ describe('Scheduler', function() {
         });
   });
 
-  describe('saves assets when --save-assets is set', function () {
+  describe('saves assets when --save-assets is set', function() {
     let prepareAssetsCalled = false;
     let saveAssetsCalled = false;
     const _prepareAssets = assets.prepareAssets;
