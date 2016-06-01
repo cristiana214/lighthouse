@@ -356,7 +356,7 @@ describe('Scheduler', function() {
     const gatherers = [screenshotGatherer];
     const options = {
       driver: fakeDriver,
-      url: 'https://example.com',
+      url: 'https://testexample.com',
       date: new Date(1464737670547),
       flags: {
         saveAssets: true

@@ -27,7 +27,7 @@ const traceContents = require('../audits/performance/progressive-app.json');
 /* eslint-env mocha */
 describe('asset-saver helper', () => {
   it('generates HTML', () => {
-    const options = {url: 'https://example.com'};
+    const options = {url: 'https://testexample.com'};
     const artifacts = {screenshots: [], traceContents: []};
     const output = assetSaver.prepareAssets(options, artifacts);
     assert.ok(/<!doctype/gim.test(output.html));
@@ -56,7 +56,7 @@ describe('asset-saver helper', () => {
     });
 
     it('screenshots file saved to disk with data', () => {
-      const ssFilename = assetSaver.getFilenamePrefix(options) + '.trace.json';
+      const ssFilename = assetSaver.getFilenamePrefix(options) + '.screenshots.html';
       const ssFileContents = fs.readFileSync(ssFilename, 'utf8');
       assert.ok(/<!doctype/gim.test(ssFileContents));
       assert.ok(ssFileContents.includes('{"timestamp":674089419.919'));
